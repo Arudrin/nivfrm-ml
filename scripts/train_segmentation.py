@@ -42,16 +42,16 @@ os.makedirs(logs_path, exist_ok=True)
 adam = optmzrs.Adam(amsgrad=True)
 model = model.train(optimizer = adam, logs_path = logs_path, batch_size = batch_size)
 
-model.convert_to_lite(path = logs_path)
+# model.convert_to_lite(path = logs_path)
 
-inp_dirs = []
-for orientation in orientations:
-    for pipe_size in pipe_sizes:
-        for label in labels:
-            inp_dir = os.path.join(preprocessed_dir, orientation, pipe_size, label)
-            inp_dirs.append(inp_dir)
+#inp_dirs = []
+#for orientation in orientations:
+#    for pipe_size in pipe_sizes:
+ #       for label in labels:
+  #          inp_dir = os.path.join(preprocessed_dir, orientation, pipe_size, label)
+   #         inp_dirs.append(inp_dir)
+#
+ #           out_dir = inp_dir.replace(preprocessed_dir, predicted_dir)
+  #          os.makedirs(out_dir, exist_ok=True)
 
-            out_dir = inp_dir.replace(preprocessed_dir, predicted_dir)
-            os.makedirs(out_dir, exist_ok=True)
-
-model.predict_multiple(inp_dir=inp_dirs, checkpoints_path=logs_path)
+#model.predict_multiple(inp_dir=inp_dirs, checkpoints_path=logs_path)

@@ -12,13 +12,19 @@ import keras.callbacks as kcb
 from .data_utils.data_loader import (image_segmentation_generator,
                                      verify_segmentation_dataset)
 
-orientations   = ['vertical', 'horizontal']
-pipe_sizes     = ['one', 'three-fourth', 'one-half']
-valve_openings = ['25', '50', '75', '100']
+#orientations   = ['vertical', 'horizontal']
+#pipe_sizes     = ['one', 'three-fourth', 'one-half']
+#valve_openings = ['25', '50', '75', '100']
 
-preprocessed_dir = '../data/preprocessed-images'
-masks_dir        = '../data/generated-masks'
-data_dir         = masks_dir
+#preprocessed_dir = '../data/preprocessed-images'
+#masks_dir        = '../data/generated-masks'
+#data_dir         = masks_dir
+
+postures = ['proper', 'slouch', 'techneck']
+
+preprocessed_dir = '../data/test-data'
+masks_dir ='../data/test-data-masks'
+data_dir = masks_dir
 
 def train(model, optimizer, logs_path, epochs = 1000, batch_size = 1):
     n_classes    = model.n_classes
@@ -29,25 +35,23 @@ def train(model, optimizer, logs_path, epochs = 1000, batch_size = 1):
 
     train_val_split = 0.8
 
-    number_of_labels            = 24
-    samples_each_label          = 100
-    number_of_available_samples = 3000
+    number_of_labels            = 3
+    samples_each_label          = 2500
+    number_of_available_samples = 9000
 
     label = 0
     img_seg_pairs = [[] for _ in range(number_of_labels)]
-    for orientation in orientations:
-        for pipe_size in pipe_sizes:
-            for vo in valve_openings:
-                picked_frames = []
-                for frame_number in range(samples_each_label):
-                    frame_number = get_random_unpicked_sample_number(number_of_available_samples, picked_frames)
-                    picked_frames.append(frame_number)
-
-                    filename = str(frame_number) + '.jpg'
-                    mask_path = os.path.join(masks_dir, orientation, pipe_size, vo, filename)
-                    stream_path = mask_path.replace(masks_dir, preprocessed_dir)
-                    img_seg_pairs[label].append((stream_path, mask_path))
-                label = label + 1
+    for posture in postures:
+    	picked_frames = []
+    	for frame_number in range(samples_each_label):
+    		print(type(frame_number))
+    		frame_number = get_random_unpicked_sample_number(number_of_available_samples, picked_frames)
+    		picked_frames.append(frame_number)
+    		filename = str(frame_number) + '.jpg'
+    		mask_path = os.path.join(masks_dir,posture,filename)
+    		stream_path = mask_path.replace(masks_dir, preprocessed_dir)
+    		img_seg_pairs[label].append((stream_path, mask_path))
+    	label = label + 1
 
     train_val_boundary = int(train_val_split * samples_each_label)
 
