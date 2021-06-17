@@ -158,21 +158,22 @@ def verify_segmentation_dataset(images_path, segs_path, n_classes, show_all_erro
     except DataLoaderError as e:
         print("Found error during data loading\n{0}".format(str(e)))
         return False
+        
+      
 
 def image_segmentation_generator(img_seg_pairs, batch_size, n_classes, input_height, input_width, output_height, output_width, do_augment=False):
     random.shuffle(img_seg_pairs)
     zipped = itertools.cycle(img_seg_pairs)
     
+ 
     while True:
         X = []
         Y = []
         for _ in range(batch_size):
             im, seg = next(zipped)
-
-
             im = cv2.imread(im, 1)
             seg = cv2.imread(seg, 1)
-
+ 
             seg[seg > 0] = 1
 
             X.append(get_image_array(im, input_width,

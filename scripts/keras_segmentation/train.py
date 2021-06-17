@@ -22,37 +22,36 @@ from .data_utils.data_loader import (image_segmentation_generator,
 
 postures = ['proper', 'slouch', 'techneck']
 
-preprocessed_dir = '../data/test-data'
-masks_dir ='../data/test-data-masks'
+preprocessed_dir = '/home/arudrin/Documents/nivfrm-ml/data/test-data'
+masks_dir ='/home/arudrin/Documents/nivfrm-ml/data/test-data-mask'
 data_dir = masks_dir
 
-def train(model, optimizer, logs_path, epochs = 1000, batch_size = 1):
+def train(model, optimizer, logs_path, epochs = 10, batch_size = 1):
     n_classes    = model.n_classes
     input_height = model.input_height
     input_width  = model.input_width
     output_height = model.output_height
     output_width = model.output_width
-
+    
     train_val_split = 0.8
 
     number_of_labels            = 3
-    samples_each_label          = 2500
-    number_of_available_samples = 9000
+    samples_each_label          = 3240
+    number_of_available_samples = 10800
 
     label = 0
     img_seg_pairs = [[] for _ in range(number_of_labels)]
     for posture in postures:
     	picked_frames = []
     	for frame_number in range(samples_each_label):
-    		print(type(frame_number))
-    		frame_number = get_random_unpicked_sample_number(number_of_available_samples, picked_frames)
+    		frame_number = get_random_unpicked_sample_number(samples_each_label, picked_frames)
     		picked_frames.append(frame_number)
     		filename = str(frame_number) + '.jpg'
     		mask_path = os.path.join(masks_dir,posture,filename)
     		stream_path = mask_path.replace(masks_dir, preprocessed_dir)
     		img_seg_pairs[label].append((stream_path, mask_path))
     	label = label + 1
-
+    
     train_val_boundary = int(train_val_split * samples_each_label)
 
     train_partition = []
@@ -69,10 +68,10 @@ def train(model, optimizer, logs_path, epochs = 1000, batch_size = 1):
     validation_generator = image_segmentation_generator(validation_partition,  batch_size, n_classes, input_height, input_width, output_height, output_width)
 
     os.makedirs(logs_path, exist_ok=True)
-    checkpoints_name = "weights-{epoch:03d}-{loss:.4f}-{val_loss:.4f}.hdf5"
+    checkpoints_name = "weights-{epoch:03d}-{loss:.4f}.hdf5"  #"weights-{epoch:03d}-{loss:.4f}-{val_loss:.4f}.hdf5" removed val_loss so i could callback
     checkpoints_path = os.path.join(logs_path + '/' + 'checkpoints', checkpoints_name)
 
-    model_chkpnts = kcb.ModelCheckpoint(checkpoints_path)
+    model_chkpnts = kcb.ModelCheckpoint(checkpoints_path, verbose=1, save_freq=5*8640)
     early_stop    = kcb.EarlyStopping(monitor='val_loss', patience=25, verbose=1)
     csv_logger    = kcb.CSVLogger(logs_path + '/' + 'training_log.csv', append=True)
 
@@ -96,9 +95,9 @@ def train(model, optimizer, logs_path, epochs = 1000, batch_size = 1):
     return model
 
 def get_random_unpicked_sample_number(number_of_samples, picked_samples):
-    sample_number = random.randint(0, number_of_samples - 1)
+    sample_number = random.randint(1, number_of_samples)
     while sample_number in picked_samples:
-       sample_number = random.randint(0, number_of_samples - 1)
+       sample_number = random.randint(1, number_of_samples)
     return sample_number
 
 def plot_training_history(history, path):

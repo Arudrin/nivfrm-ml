@@ -3,27 +3,29 @@ import numpy as np
 import os
 import generate_and_apply_masks_to_waterstreams as g
 
-video = cv2.VideoCapture('../data/slouch2.mp4')
+video = cv2.VideoCapture('data_in_scriptfolder/forward_p2_1.mov')
 
 
-path = '../data/test-data/slouch' 
+path = '/home/arudrin/Documents/nivfrm-ml/scripts/data_in_scriptfolder/checkingpool'
 count = 0
 ret = 1
+ctr = 0
 
 while ret:
 
     ret, frame = video.read()
     if not ret:
     	break
-    	
-    image = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
-    #frame = cv2.resize(frame,(1080,1080))
-    #frame,_,_,_,_ = g.resize_image(frame, min_dim=1080, max_dim=1080, min_scale=None, mode="square")
+    ctr+=1
+    if ctr == 1201:
+    	break
     
-
+    #frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+    frame,_,_,_,_ = g.resize_image(frame, min_dim=240, max_dim=240, min_scale=None, mode="square")
+    #frame = g.to_gray(frame)
     count+=1
-    cv2.imwrite( os.path.join(path , "slouch"+str(count)+".jpg"), image)
-    
+    cv2.imwrite( os.path.join(path ,str(count)+".jpg"), frame)
+    ctr
     
 print("END")
 

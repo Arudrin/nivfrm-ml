@@ -16,8 +16,8 @@ import six
 
 random.seed(DATA_LOADER_SEED)
 
-preprocessed_dir = '../data/preprocessed-images'
-predicted_dir = '../data/predicted-masks'
+preprocessed_dir = '/home/arudrin/Documents/nivfrm-ml/data/test-data'
+predicted_dir = '/home/arudrin/Documents/nivfrm-ml/data/predicted-mask'
 
 
 def predict(model=None, inp=None, out_fname=None, checkpoints_path=None):
@@ -56,25 +56,42 @@ def predict(model=None, inp=None, out_fname=None, checkpoints_path=None):
 
     if out_fname is not None:
         cv2.imwrite(out_fname, seg_img)
-
+        print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+        
     return pr
+    
+def call_predict(model=None, inp=None,out_dir=None):
+	return predict(model,inp,out_dir)
 
 
 def predict_multiple(model=None, inps=None, inp_dir=None, out_dir=None, checkpoints_path=None):
-    batch_size = 100
-    for batch_start in range(1000, 1001, batch_size):
-        inps = []
 
-        for frame_number in range(batch_start, batch_start+batch_size):
-            for i in inp_dir:
-                img_path = os.path.join(i, str(frame_number) + '.jpg')                
-                inps += [img_path]
+	batch_size = 100
+	inps = []
+	for number in range(1,batch_size+1):
+		random_frame_number =random.randrange(3240)+1
+		for i in inp_dir:
+			img_path = os.path.join(i,str(random_frame_number) + '.jpg')
+			inps += [img_path]
+			
+	assert type(inps) is list
+	
+	for i,inp in enumerate(tqdm(inps)):
+		out_dir = inp.replace(preprocessed_dir, predicted_dir)
+		print( predict(model,inp,out_dir))
+    #for batch_start in range(1000, 1001, batch_size):
+    #    inps = []
 
-        assert type(inps) is list
+     #   for frame_number in range(batch_start, batch_start+batch_size):
+     #       for i in inp_dir:
+      #          img_path = os.path.join(i, str(frame_number) + '.jpg')                
+      #          inps += [img_path]
+#OLD
+          #assert type(inps) is list
 
-        for i, inp in enumerate(tqdm(inps)):
-            out_dir = inp.replace(preprocessed_dir, predicted_dir)
-            _ = predict(model, inp, out_dir)
+        #for i, inp in enumerate(tqdm(inps)):
+          #  out_dir = inp.replace(preprocessed_dir, predicted_dir)
+           # _ = predict(model, inp, out_dir)
 
 def evaluate(model=None, inp_images=None, annotations=None,
              checkpoints_path=None):

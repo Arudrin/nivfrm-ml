@@ -4,21 +4,25 @@ import os
 import generate_and_apply_masks_to_waterstreams as g
 
 image = cv2.imread("white.png") 
-image = cv2.resize(image,(1920,1080))
+image = cv2.resize(image,(1080,1920))
 blackimage = cv2.imread("blackimage.jpg")
-blackimage = cv2.resize(blackimage,(1920,1080))
-video = cv2.VideoCapture('../data/techneck2.mp4')
+blackimage = cv2.resize(blackimage,(1080,1920))
+video = cv2.VideoCapture('data/techneck4green.mp4')
 
 
 
-path = '../data/test-data-mask/techneck' 
-count = 0
+path = '/home/arudrin/Documents/nivfrm-ml/data/test-data-mask/techneck'
+count = 2400
 ret = 1
+ctr = 0
 while ret:  #CTRL C at console/terminal to force stop loop
   
     ret, frame = video.read()
     if not ret:
     	print("END")
+    	break
+    ctr+=1
+    if ctr==1201:
     	break
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -37,7 +41,10 @@ while ret:  #CTRL C at console/terminal to force stop loop
     cv2.drawContours(f,contours, -1, (255,255,255), 3)
     
     
-    f,_,_,_,_ = g.resize_image(f, min_dim=1080, max_dim=1080, min_scale=None, mode="square")
+    f,_,_,_,_ = g.resize_image(f, min_dim=240, max_dim=240, min_scale=None, mode="square")
     count+=1
-    f = cv2.rotate(f, cv2.ROTATE_90_CLOCKWISE)
-    cv2.imwrite( os.path.join(path , "techneck"+str(count)+".jpg"), f) 
+    #f = cv2.rotate(f, cv2.ROTATE_90_CLOCKWISE)
+    f = g.to_gray(f)
+    cv2.imwrite( os.path.join(path , str(count)+".jpg"), f)
+
+print("END")
