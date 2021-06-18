@@ -47,7 +47,7 @@ try:
     makedirs(dstpath)
 except:
     print ("Directory already exist, images will be written in same folder")
-# Folder won't used
+
 files = list(filter(lambda f: isfile(join(source,f)), listdir(source)))
 for image in files:
 	inp = os.path.join(source,image)
