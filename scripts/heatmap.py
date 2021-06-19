@@ -35,7 +35,6 @@ for image in files:
 
 
 
-
 #loop through bitmap - the image to be analyzed	
 y_index = 0	
 blank = [] #array to be transformed to a heatmap
@@ -60,7 +59,7 @@ maparray = np.array(blank)
 heatmap = maparray.astype(np.uint8)
 
 #heat = cv2.applyColorMap(bitmap,cv2.COLORMAP_JET)
-cv2.imwrite(os.path.join(dstpath,'heatmap1'),heatmap)
+cv2.imwrite(os.path.join(dstpath,'heatmap1'+".bmp"),heatmap)
 cv2.imshow('heat',heatmap)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
