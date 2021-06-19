@@ -5,7 +5,7 @@ from os import listdir,makedirs
 from os.path import isfile,join
 
 import subprocess
-
+import numpy as np
 
 	
 	
@@ -31,7 +31,24 @@ for image in files:
 	#print(img)
 	#bitmap = img + bitmap
 	bitmap = cv2.add(bitmap, img)
-	
+
+#create blank_image to become heatmap
+blank_image = np.zeros((240,240,3), np.uint8)
+
+
+#loop through bitmap - the image to be analyzed	
+y_index = 0	
+for row in bitmap:
+	x_index = 0
+	for value in row:
+		blank_image[y_index,x_index] = [255,255,255]
+	y_index+=1
+
+
+#heat = cv2.applyColorMap(bitmap,cv2.COLORMAP_JET)
+cv2.imshow('heat',blank_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 print(bitmap[184,124]) # bitmap[y,x]
 
