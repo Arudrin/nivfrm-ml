@@ -32,24 +32,30 @@ for image in files:
 	#bitmap = img + bitmap
 	bitmap = cv2.add(bitmap, img)
 
-#create blank_image to become heatmap
-blank_image = np.zeros((240,240,3), np.uint8)
+
+
 
 
 #loop through bitmap - the image to be analyzed	
 y_index = 0	
+blank = [] #array to be transformed to a heatmap
 for row in bitmap:
 	x_index = 0
+	blank_row = []
 	for value in row:
-		blank_image[y_index,x_index] = [255,255,255]
+		blank_row.append((255,0,0))
 	y_index+=1
+	blank.append(blank_row)
 
-
+maparray = np.array(blank)
+heatmap = maparray.astype(np.uint8)
+print(type(heatmap))
+print(heatmap)
 #heat = cv2.applyColorMap(bitmap,cv2.COLORMAP_JET)
-cv2.imshow('heat',blank_image)
+cv2.imshow('heat',heatmap)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-print(bitmap[184,124]) # bitmap[y,x]
+ # bitmap[y,x]
 
 
