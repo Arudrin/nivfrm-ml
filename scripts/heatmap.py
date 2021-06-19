@@ -60,6 +60,7 @@ maparray = np.array(blank)
 heatmap = maparray.astype(np.uint8)
 
 #heat = cv2.applyColorMap(bitmap,cv2.COLORMAP_JET)
+cv2.imwrite(os.path.join(dstpath,'heatmap1'),heatmap)
 cv2.imshow('heat',heatmap)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
