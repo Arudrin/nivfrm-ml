@@ -43,14 +43,22 @@ for row in bitmap:
 	x_index = 0
 	blank_row = []
 	for value in row:
-		blank_row.append((255,0,0))
+		if value == 0 or value <= 254:
+			blank_row.append((0,0,0))
+			continue
+		if value <= 850:
+			blank_row.append((0,255,255))
+		elif value <= 1700:
+			blank_row.append((0,140,255))
+		elif value <= 2550:
+			blank_row.append((0,0,255))
+		
 	y_index+=1
 	blank.append(blank_row)
 
 maparray = np.array(blank)
 heatmap = maparray.astype(np.uint8)
-print(type(heatmap))
-print(heatmap)
+
 #heat = cv2.applyColorMap(bitmap,cv2.COLORMAP_JET)
 cv2.imshow('heat',heatmap)
 cv2.waitKey(0)
